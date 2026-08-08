@@ -1,61 +1,59 @@
-# Publicar la app web
+# Publicar en GitHub Pages
 
-## Opción A — GitHub Pages (recomendada)
+La app se despliega **solo con GitHub Pages** (sin Vercel ni Netlify).
 
-### Si usas la rama `gh-pages` (ya publicada)
+## Activar (una vez)
 
 1. Abre **Settings → Pages**:  
    https://github.com/ghostspecialtycoffee-lab/APP-dieguito/settings/pages
 
-2. **Build and deployment → Source**: elige **Deploy from a branch**
+2. **Build and deployment → Source:** **Deploy from a branch**
 
-3. Branch: **`gh-pages`**, folder: **`/ (root)`**, Save.
+3. Branch: **`gh-pages`**, folder: **`/ (root)`** → **Save**
 
-4. En 1–2 minutos la app estará en:  
+4. URL de la app:  
    **https://ghostspecialtycoffee-lab.github.io/APP-dieguito/**
 
-### Si usas GitHub Actions
+## Actualización automática
 
-1. En la misma página, Source: **GitHub Actions**
-2. Agrega secret `VITE_CONVEX_URL` (ver abajo)
-3. Ejecuta workflow **Deploy Web App** en Actions
-
----
+Cada push a `main` ejecuta el workflow **Publish to gh-pages**, que compila y actualiza la rama `gh-pages`.
 
 ## Backend Convex (datos en la nube)
 
-Sin esto la interfaz carga pero no guarda datos.
+Sin esto la interfaz carga pero no guarda fincas ni visitas.
 
 ```bash
 npx convex login
-npx convex deploy --cmd 'npm run build'
+npx convex deploy --cmd 'npm run build:pages'
 ```
 
-Copia la URL (`https://….convex.cloud`) y:
+En el repo: **Settings → Secrets and variables → Actions** → secret `VITE_CONVEX_URL` con la URL de Convex (`https://….convex.cloud`).
 
-- **GitHub Actions:** Settings → Secrets → `VITE_CONVEX_URL`
-- **Vercel / Netlify:** variable de entorno `VITE_CONVEX_URL`
+Vuelve a ejecutar el workflow **Publish to gh-pages** (Actions → Run workflow).
 
----
+## Publicar manualmente desde tu máquina
 
-## Opción B — Vercel
+```bash
+npm install
+npm run deploy:pages
+```
 
-1. https://vercel.com/new → importar este repo
-2. Variable: `VITE_CONVEX_URL`
-3. Deploy (usa `vercel.json` incluido)
+Requiere `npx gh-pages` (se instala al ejecutar el script).
 
-## Opción C — Netlify
-
-Importar repo; `netlify.toml` ya configurado. Agregar `VITE_CONVEX_URL`.
-
----
-
-## Local
+## Desarrollo local
 
 ```bash
 npm install
 npx convex dev
-npm run start:web
+npm run dev
 ```
 
 http://localhost:5173
+
+Para probar con la misma ruta que GitHub Pages:
+
+```bash
+npm run build:pages && npm run preview
+```
+
+http://localhost:5173/APP-dieguito/

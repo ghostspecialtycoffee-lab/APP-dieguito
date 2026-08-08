@@ -18,101 +18,37 @@ Aplicación web para gestionar asistencia técnica en fincas cafeteras: registro
 - Node.js 18+
 - Cuenta Convex (gratuita) o modo agente anónimo para desarrollo
 
-## Instalación
+## Instalación local
 
 ```bash
 npm install
-```
-
-### Backend (Convex)
-
-```bash
-# Desarrollo local con Convex
 npx convex dev
-```
-
-Copie la URL de despliegue en `.env.local`:
-
-```env
-VITE_CONVEX_URL=https://your-deployment.convex.cloud
-CONVEX_AGENT_MODE=anonymous
-```
-
-### Frontend
-
-```bash
 npm run dev
 ```
 
 Abra http://localhost:5173
 
-## App web (producción)
+## App web en GitHub Pages
 
-La aplicación es una SPA web responsive. Para servir el build de producción localmente:
+Despliegue **solo con GitHub Pages** (sin Vercel).
 
-```bash
-npm run start:web
-```
+1. **Settings → Pages** → Source: **Deploy from a branch** → `gh-pages` / `/ (root)`
+2. URL: **https://ghostspecialtycoffee-lab.github.io/APP-dieguito/**
+3. Cada push a `main` actualiza `gh-pages` (workflow **Publish to gh-pages**)
 
-### Desplegar en la web
-
-**1. Backend Convex (requerido para datos en la nube)**
-
-```bash
-npx convex login
-npx convex deploy --cmd 'npm run build'
-```
-
-Guarde la URL de producción (`https://….convex.cloud`) como `VITE_CONVEX_URL` en su hosting.
-
-**2. Frontend estático**
-
-| Plataforma | Configuración |
-|------------|---------------|
-| **Vercel** | Conecte el repo; usa `vercel.json` automáticamente |
-| **Netlify** | Build: `npm run build`, publish: `dist` (`netlify.toml` incluido) |
-| **GitHub Pages** | Workflow `.github/workflows/deploy-web.yml` — configure `VITE_CONVEX_URL` en Secrets del repo |
-
-En Vercel/Netlify, agregue la variable de entorno:
-
-```
-VITE_CONVEX_URL=https://tu-deployment.convex.cloud
-```
-
-**3. PWA**
-
-La app incluye `manifest.webmanifest` para instalación en móvil y escritorio.
+Para datos en la nube, configure Convex y el secret `VITE_CONVEX_URL`. Ver [DEPLOY.md](./DEPLOY.md).
 
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
 | `npm run dev` | Desarrollo con recarga en caliente |
-| `npm run build` | Compilar app web para producción |
+| `npm run build` | Compilar para producción (ruta `/`) |
+| `npm run build:pages` | Build con ruta `/APP-dieguito/` para GitHub Pages |
 | `npm run preview` | Servir `dist` en http://localhost:5173 |
 | `npm run start:web` | Build + servir producción |
-| `npm run convex:dev` | Backend Convex (modo agente) |
+| `npm run deploy:pages` | Build + push a rama `gh-pages` |
 | `npx convex dev` | Backend Convex (desarrollo) |
-
-## Estructura
-
-```
-src/
-  components/   # Layout, UI compartidos
-  pages/        # Pantallas por módulo
-convex/
-  schema.ts     # Tablas: farms, diagnostics, workPlans, visits, alerts
-  farms.ts      # CRUD fincas
-  ...
-```
-
-## Flujo del programa
-
-1. Registro de finca
-2. Diagnóstico inicial
-3. Plan de trabajo
-4. Visitas técnicas y bitácora
-5. Informes y exportación
 
 ## Licencia
 

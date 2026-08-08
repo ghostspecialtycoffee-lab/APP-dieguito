@@ -15,12 +15,12 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {convex ? (
       <ConvexProvider client={convex}>
-        <BrowserRouter>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
           <App />
         </BrowserRouter>
       </ConvexProvider>
     ) : (
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <App />
       </BrowserRouter>
     )}

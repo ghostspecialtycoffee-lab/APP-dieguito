@@ -15,6 +15,8 @@ const workPlanValidator = v.object({
   objective: v.string(),
   activities: v.array(activityValidator),
   responsible: v.optional(v.string()),
+  scheduleStart: v.optional(v.string()),
+  scheduleEnd: v.optional(v.string()),
   updatedAt: v.number(),
 });
 
@@ -35,6 +37,8 @@ export const upsert = mutation({
     objective: v.string(),
     activities: v.array(activityValidator),
     responsible: v.optional(v.string()),
+    scheduleStart: v.optional(v.string()),
+    scheduleEnd: v.optional(v.string()),
   },
   returns: v.id("workPlans"),
   handler: async (ctx, args) => {
@@ -48,6 +52,8 @@ export const upsert = mutation({
       objective: args.objective,
       activities: args.activities,
       responsible: args.responsible,
+      scheduleStart: args.scheduleStart,
+      scheduleEnd: args.scheduleEnd,
       updatedAt: Date.now(),
     };
 

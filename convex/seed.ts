@@ -10,13 +10,13 @@ export const seed = mutation({
 
     const farm1 = await ctx.db.insert("farms", {
       name: "Finca El Paraíso",
-      owner: "Carlos Mendoza",
-      address: "Vereda La Esperanza, Pitalito, Huila",
+      owner: "Juan Pérez",
+      address: "Vereda La Bella, Manizales",
       altitude: 1650,
-      areaHa: 3.5,
-      plantCount: 12000,
-      variety: "Caturra",
-      sowingDate: "2019-03-15",
+      areaHa: 2.5,
+      plantCount: 5000,
+      variety: "Castillo",
+      sowingDate: "2019-06-15",
       createdAt: Date.now(),
     });
 
@@ -51,60 +51,61 @@ export const seed = mutation({
       shadeType: "Plátano y Guamo",
       sowingSystem: "Tradicional",
       fertilizationFreq: "Cada 3 meses",
-      lastFertilization: "2026-05-15",
-      observations:
-        "Cultivo en buen estado general. Presencia leve de broca en lote bajo.",
-      soilPh: 5.2,
-      organicMatter: 4.8,
-      phosphorus: 28,
-      potassium: 180,
-      calcium: 1200,
-      magnesium: 280,
-      aluminum: 0.5,
+      lastFertilization: "2024-05-01",
+      observations: "Buen desarrollo general",
+      soilPh: 5.6,
+      organicMatter: 3.2,
+      phosphorus: 12,
+      potassium: 0.35,
+      calcium: 5.1,
+      magnesium: 1.2,
+      aluminum: 0.2,
       soilPdfName: "analisis_suelo_el_pariso.pdf",
       updatedAt: Date.now(),
     });
 
     await ctx.db.insert("workPlans", {
       farmId: farm1,
-      objective: "Mejorar nutrición y productividad del cultivo de café",
+      objective: "Mejorar nutrición y productividad",
       activities: [
         {
           name: "Fertilización edáfica",
           completed: true,
-          inputs: "Urea 200g/planta",
-          scheduledDate: "2026-06-01",
+          inputs: "Urea 200g/planta, Fosfato 150g/planta",
+          scheduledDate: "2024-06-01",
         },
         {
           name: "Control de arvenses",
           completed: false,
           inputs: "Machete manual",
-          scheduledDate: "2026-07-15",
+          scheduledDate: "2024-07-15",
         },
         {
           name: "Manejo de sombra",
           completed: false,
           inputs: "Recorte de plátano",
-          scheduledDate: "2026-08-01",
+          scheduledDate: "2024-08-01",
         },
         {
           name: "Monitoreo de broca",
           completed: false,
           inputs: "Trampas de alcohol",
-          scheduledDate: "2026-06-20",
+          scheduledDate: "2024-06-20",
         },
       ],
       responsible: "Ing. Ana Torres",
+      scheduleStart: "2024-06-01",
+      scheduleEnd: "2024-11-30",
       updatedAt: Date.now(),
     });
 
     await ctx.db.insert("visits", {
       farmId: farm1,
-      date: "2026-07-10",
+      date: "2024-07-10",
       visitType: "Seguimiento",
       technician: "Ing. Ana Torres",
       weather: "Soleado",
-      observations: "Cultivo en buen estado. Se observó presencia leve de broca.",
+      observations: "Cultivo en buen estado. Presencia leve de broca.",
       activities: [
         "Monitoreo de plagas",
         "Evaluación de fertilización",
@@ -116,13 +117,13 @@ export const seed = mutation({
         "Recortar sombra en lote 2",
       ],
       photoUrls: [],
-      nextVisitDate: "2026-08-10",
+      nextVisitDate: "2024-08-10",
       createdAt: Date.now(),
     });
 
     await ctx.db.insert("visits", {
       farmId: farm1,
-      date: "2026-05-20",
+      date: "2024-05-20",
       visitType: "Diagnóstico",
       technician: "Ing. Ana Torres",
       weather: "Parcialmente nublado",
@@ -137,16 +138,16 @@ export const seed = mutation({
         "Programar fertilización",
       ],
       photoUrls: [],
-      nextVisitDate: "2026-07-10",
+      nextVisitDate: "2024-07-10",
       createdAt: Date.now() - 86400000 * 50,
     });
 
     await ctx.db.insert("alerts", {
       farmId: farm1,
       title: "Visita programada",
-      message: "Seguimiento en Finca El Paraíso el 10 de agosto",
+      message: "Seguimiento en Finca El Paraíso",
       type: "visit",
-      dueDate: "2026-08-10",
+      dueDate: "2024-08-10",
       read: false,
       createdAt: Date.now(),
     });
@@ -156,7 +157,7 @@ export const seed = mutation({
       title: "Actividad pendiente",
       message: "Control de arvenses en Finca La Esperanza",
       type: "activity",
-      dueDate: "2026-07-20",
+      dueDate: "2024-07-20",
       read: false,
       createdAt: Date.now() - 3600000,
     });

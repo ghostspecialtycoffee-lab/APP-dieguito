@@ -46,6 +46,8 @@ export default defineSchema({
       }),
     ),
     responsible: v.optional(v.string()),
+    scheduleStart: v.optional(v.string()),
+    scheduleEnd: v.optional(v.string()),
     updatedAt: v.number(),
   }).index("by_farm", ["farmId"]),
 

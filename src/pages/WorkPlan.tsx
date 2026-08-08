@@ -27,6 +27,9 @@ export default function WorkPlan() {
 
   const [objective, setObjective] = useState("");
   const [responsible, setResponsible] = useState("");
+  const [scheduleStart, setScheduleStart] = useState("");
+  const [scheduleEnd, setScheduleEnd] = useState("");
+  const [expandedActivity, setExpandedActivity] = useState<number | null>(null);
   const [activities, setActivities] = useState<
     Array<{
       name: string;
@@ -47,6 +50,8 @@ export default function WorkPlan() {
     if (plan) {
       setObjective(plan.objective);
       setResponsible(plan.responsible ?? "");
+      setScheduleStart(plan.scheduleStart ?? "");
+      setScheduleEnd(plan.scheduleEnd ?? "");
       setActivities(
         plan.activities.map((a) => ({
           name: a.name,
@@ -68,6 +73,8 @@ export default function WorkPlan() {
       farmId: farmId as Id<"farms">,
       objective,
       responsible: responsible || undefined,
+      scheduleStart: scheduleStart || undefined,
+      scheduleEnd: scheduleEnd || undefined,
       activities: activities.map((a) => ({
         name: a.name,
         completed: a.completed,
@@ -112,6 +119,27 @@ export default function WorkPlan() {
           />
         </div>
 
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="label">Fechas programadas (inicio)</label>
+            <input
+              className="input-field"
+              type="date"
+              value={scheduleStart}
+              onChange={(e) => setScheduleStart(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="label">Fechas programadas (fin)</label>
+            <input
+              className="input-field"
+              type="date"
+              value={scheduleEnd}
+              onChange={(e) => setScheduleEnd(e.target.value)}
+            />
+          </div>
+        </div>
+
         <div>
           <h3 className="mb-3 font-semibold text-coffee-900">
             Actividades recomendadas
@@ -146,15 +174,25 @@ export default function WorkPlan() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div>
                     <label className="label">Insumos y dosis</label>
-                    <input
-                      className="input-field"
-                      value={act.inputs ?? ""}
-                      onChange={(e) => {
-                        const next = [...activities];
-                        next[i] = { ...act, inputs: e.target.value };
-                        setActivities(next);
-                      }}
-                    />
+                    {expandedActivity === i ? (
+                      <textarea
+                        className="input-field min-h-[60px]"
+                        value={act.inputs ?? ""}
+                        onChange={(e) => {
+                          const next = [...activities];
+                          next[i] = { ...act, inputs: e.target.value };
+                          setActivities(next);
+                        }}
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        className="text-sm text-coffee-600 hover:text-coffee-800 underline"
+                        onClick={() => setExpandedActivity(i)}
+                      >
+                        Ver detalle
+                      </button>
+                    )}
                   </div>
                   <div>
                     <label className="label">Fecha programada</label>

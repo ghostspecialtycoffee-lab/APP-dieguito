@@ -13,6 +13,7 @@ import Reports from "./pages/Reports";
 import Calendar from "./pages/Calendar";
 import Alerts from "./pages/Alerts";
 import Settings from "./pages/Settings";
+import ModuleHub from "./pages/ModuleHub";
 import SeedBanner from "./components/SeedBanner";
 
 export default function App() {
@@ -25,6 +26,10 @@ export default function App() {
           <Route path="fincas" element={<FarmsList />} />
           <Route path="fincas/:farmId" element={<FarmDetail />} />
           <Route path="fincas/:farmId/diagnostico" element={<Diagnostic />} />
+          <Route
+            path="fincas/:farmId/diagnostico/suelos"
+            element={<Diagnostic initialTab="suelos" />}
+          />
           <Route path="fincas/:farmId/plan" element={<WorkPlan />} />
           <Route path="fincas/:farmId/visitas" element={<Visits />} />
           <Route path="fincas/:farmId/visitas/nueva" element={<NewVisit />} />
@@ -33,6 +38,56 @@ export default function App() {
             element={<VisitDetail />}
           />
           <Route path="fincas/:farmId/bitacora" element={<Logbook />} />
+          <Route
+            path="diagnosticos"
+            element={
+              <ModuleHub
+                title="Diagnósticos"
+                subtitle="Seleccione la finca para ver o editar el diagnóstico inicial"
+                pathSuffix="/diagnostico"
+              />
+            }
+          />
+          <Route
+            path="visitas-tecnicas"
+            element={
+              <ModuleHub
+                title="Visitas Técnicas"
+                subtitle="Seleccione la finca para gestionar visitas de campo"
+                pathSuffix="/visitas"
+              />
+            }
+          />
+          <Route
+            path="bitacora"
+            element={
+              <ModuleHub
+                title="Bitácora"
+                subtitle="Seleccione la finca para consultar el historial"
+                pathSuffix="/bitacora"
+              />
+            }
+          />
+          <Route
+            path="plan-trabajo"
+            element={
+              <ModuleHub
+                title="Plan de Trabajo"
+                subtitle="Seleccione la finca para ver el plan de trabajo"
+                pathSuffix="/plan"
+              />
+            }
+          />
+          <Route
+            path="analisis-suelos"
+            element={
+              <ModuleHub
+                title="Análisis de Suelos"
+                subtitle="Seleccione la finca para ver el análisis de suelos"
+                pathSuffix="/diagnostico/suelos"
+              />
+            }
+          />
           <Route path="informes" element={<Reports />} />
           <Route path="calendario" element={<Calendar />} />
           <Route path="alertas" element={<Alerts />} />

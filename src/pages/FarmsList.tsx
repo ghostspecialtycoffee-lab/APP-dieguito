@@ -168,7 +168,7 @@ export default function FarmsList() {
                 <h3 className="font-semibold text-coffee-900">{farm.name}</h3>
                 <p className="text-sm text-coffee-600 truncate">{farm.address}</p>
                 <p className="text-xs text-coffee-500">
-                  {farm.altitude} msnm · {farm.areaHa} ha
+                  {farm.altitude} m.s.n.m. · {farm.areaHa} ha
                 </p>
               </div>
             </Link>

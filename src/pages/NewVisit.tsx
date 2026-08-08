@@ -6,6 +6,12 @@ import { useState } from "react";
 import { useQuery } from "convex/react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
 
+const TECHNICIANS = [
+  "Ing. Ana Torres",
+  "Ing. Carlos Mendoza",
+  "Ing. Laura Gómez",
+];
+
 export default function NewVisit() {
   const { farmId } = useParams<{ farmId: string }>();
   const navigate = useNavigate();
@@ -18,7 +24,7 @@ export default function NewVisit() {
   const [form, setForm] = useState({
     date: new Date().toISOString().split("T")[0],
     visitType: "Seguimiento",
-    technician: "Ing. Ana Torres",
+    technician: TECHNICIANS[0],
     weather: "Soleado",
     observations: "",
     nextVisitDate: "",
@@ -80,12 +86,16 @@ export default function NewVisit() {
           </div>
           <div>
             <label className="label">Técnico responsable</label>
-            <input
+            <select
               className="input-field"
               required
               value={form.technician}
               onChange={(e) => setForm({ ...form, technician: e.target.value })}
-            />
+            >
+              {TECHNICIANS.map((name) => (
+                <option key={name} value={name}>{name}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="label">Clima</label>

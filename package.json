@@ -11,7 +11,8 @@
     "start:web": "npm run build && npm run preview",
     "build:pages": "VITE_BASE_PATH=/APP-dieguito/ npm run build",
     "deploy:pages": "npm run build:pages && cp dist/index.html dist/404.html && npx --yes gh-pages -d dist -t true",
-    "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev"
+    "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev",
+    "check:config": "bash scripts/check-config.sh"
   },
   "dependencies": {
     "convex": "^1.21.0",

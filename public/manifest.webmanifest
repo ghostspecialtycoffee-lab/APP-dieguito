@@ -1,0 +1,19 @@
+{
+  "name": "Asistencias Técnicas en Café",
+  "short_name": "Café ATC",
+  "description": "Programa de asistencias técnicas para fincas cafeteras",
+  "lang": "es",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d2219",
+  "theme_color": "#2d6f51",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/coffee.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -46,14 +46,53 @@ npm run dev
 
 Abra http://localhost:5173
 
+## App web (producción)
+
+La aplicación es una SPA web responsive. Para servir el build de producción localmente:
+
+```bash
+npm run start:web
+```
+
+### Desplegar en la web
+
+**1. Backend Convex (requerido para datos en la nube)**
+
+```bash
+npx convex login
+npx convex deploy --cmd 'npm run build'
+```
+
+Guarde la URL de producción (`https://….convex.cloud`) como `VITE_CONVEX_URL` en su hosting.
+
+**2. Frontend estático**
+
+| Plataforma | Configuración |
+|------------|---------------|
+| **Vercel** | Conecte el repo; usa `vercel.json` automáticamente |
+| **Netlify** | Build: `npm run build`, publish: `dist` (`netlify.toml` incluido) |
+| **GitHub Pages** | Workflow `.github/workflows/deploy-web.yml` — configure `VITE_CONVEX_URL` en Secrets del repo |
+
+En Vercel/Netlify, agregue la variable de entorno:
+
+```
+VITE_CONVEX_URL=https://tu-deployment.convex.cloud
+```
+
+**3. PWA**
+
+La app incluye `manifest.webmanifest` para instalación en móvil y escritorio.
+
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
-| `npm run dev` | Servidor de desarrollo Vite |
-| `npm run build` | Compilar para producción |
-| `npm run preview` | Vista previa del build |
-| `npx convex dev` | Backend Convex en desarrollo |
+| `npm run dev` | Desarrollo con recarga en caliente |
+| `npm run build` | Compilar app web para producción |
+| `npm run preview` | Servir `dist` en http://localhost:5173 |
+| `npm run start:web` | Build + servir producción |
+| `npm run convex:dev` | Backend Convex (modo agente) |
+| `npx convex dev` | Backend Convex (desarrollo) |
 
 ## Estructura
 

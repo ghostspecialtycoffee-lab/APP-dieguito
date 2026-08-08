@@ -1,0 +1,114 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #1b120c;
+  color: #f4ece4;
+}
+
+.app {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.25rem;
+}
+
+.subtitle {
+  margin-top: 0.25rem;
+  opacity: 0.7;
+}
+
+.order-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  background: #2a1c12;
+  padding: 1.25rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+}
+
+.order-form label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.8rem;
+  gap: 0.35rem;
+  opacity: 0.85;
+}
+
+.order-form input,
+.order-form select {
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid #52402f;
+  background: #17100a;
+  color: inherit;
+  font-size: 0.95rem;
+}
+
+.order-form button {
+  grid-column: 1 / -1;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #c98a5b;
+  color: #1b120c;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.order-form button:hover {
+  background: #d89b6c;
+}
+
+.error {
+  color: #ff9c8a;
+}
+
+.empty {
+  opacity: 0.6;
+}
+
+.orders {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.orders li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  background: #2a1c12;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+}
+
+.orders .drink {
+  font-weight: 600;
+}
+
+.orders .size {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #52402f;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+}
+
+.orders .customer {
+  margin-left: auto;
+  opacity: 0.75;
+}

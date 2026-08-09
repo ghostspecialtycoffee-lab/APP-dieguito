@@ -1,8 +1,8 @@
 import { Cloud, Users, Shield, Database } from "lucide-react";
 import { PageHeader } from "../components/ui";
+import { isCloudMode } from "../lib/appMode";
 
 export default function Settings() {
-  const hasConvex = Boolean(import.meta.env.VITE_CONVEX_URL);
 
   return (
     <div>
@@ -19,18 +19,18 @@ export default function Settings() {
           </div>
           <p className="text-sm text-coffee-600">
             Los datos se almacenan en Convex para acceso seguro desde cualquier
-            dispositivo.
+            dispositivo. Sin Convex, los datos quedan en este navegador.
           </p>
           <p className="text-sm">
             Estado:{" "}
             <span
               className={
-                hasConvex
+                isCloudMode
                   ? "font-medium text-green-700"
                   : "font-medium text-amber-700"
               }
             >
-              {hasConvex ? "Conectado" : "No configurado"}
+              {isCloudMode ? "Conectado (nube)" : "Modo local (navegador)"}
             </span>
           </p>
         </div>

@@ -1,10 +1,7 @@
-import { useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 import { useState } from "react";
-import { useQuery } from "convex/react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
+import { useCreateVisit, useFarm } from "../api/hooks";
 
 const TECHNICIANS = [
   "Ing. Ana Torres",
@@ -15,11 +12,8 @@ const TECHNICIANS = [
 export default function NewVisit() {
   const { farmId } = useParams<{ farmId: string }>();
   const navigate = useNavigate();
-  const farm = useQuery(
-    api.farms.get,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const createVisit = useMutation(api.visits.create);
+  const farm = useFarm(farmId);
+  const createVisit = useCreateVisit();
 
   const [form, setForm] = useState({
     date: new Date().toISOString().split("T")[0],
@@ -36,7 +30,7 @@ export default function NewVisit() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const visitId = await createVisit({
-      farmId: farmId as Id<"farms">,
+      farmId: farmId!,
       date: form.date,
       visitType: form.visitType,
       technician: form.technician,

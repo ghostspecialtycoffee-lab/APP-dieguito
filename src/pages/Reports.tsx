@@ -1,5 +1,3 @@
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import {
   FileText,
   FileSpreadsheet,
@@ -8,6 +6,7 @@ import {
   History,
 } from "lucide-react";
 import { PageHeader } from "../components/ui";
+import { useFarmsList } from "../api/hooks";
 
 const reportCards = [
   {
@@ -43,7 +42,7 @@ const reportCards = [
 ];
 
 export default function Reports() {
-  const farms = useQuery(api.farms.list);
+  const farms = useFarmsList();
 
   const handleExport = (title: string) => {
     if (!farms) return;

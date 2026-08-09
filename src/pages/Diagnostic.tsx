@@ -1,9 +1,12 @@
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { useParams } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useState } from "react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
+import {
+  useDiagnosticByFarm,
+  useFarm,
+  useUpdateFarm,
+  useUpsertDiagnostic,
+} from "../api/hooks";
 
 type TabId = "informacion" | "cultivo" | "suelos";
 
@@ -30,16 +33,10 @@ type DiagnosticProps = {
 export default function Diagnostic({ initialTab = "informacion" }: DiagnosticProps) {
   const { farmId } = useParams<{ farmId: string }>();
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
-  const farm = useQuery(
-    api.farms.get,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const diagnostic = useQuery(
-    api.diagnostics.getByFarm,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const upsertDiagnostic = useMutation(api.diagnostics.upsert);
-  const updateFarm = useMutation(api.farms.update);
+  const farm = useFarm(farmId);
+  const diagnostic = useDiagnosticByFarm(farmId);
+  const upsertDiagnostic = useUpsertDiagnostic();
+  const updateFarm = useUpdateFarm();
   const [saved, setSaved] = useState(false);
 
   const [farmForm, setFarmForm] = useState({
@@ -130,7 +127,7 @@ export default function Diagnostic({ initialTab = "informacion" }: DiagnosticPro
     });
 
     await upsertDiagnostic({
-      farmId: farmId as Id<"farms">,
+      farmId: farmId!,
       cropAge: num(form.cropAge),
       spacing: form.spacing || undefined,
       shadeType: form.shadeType || undefined,

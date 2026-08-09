@@ -1,8 +1,7 @@
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Link } from "react-router-dom";
 import { MapPin } from "lucide-react";
 import { EmptyState, LoadingState, PageHeader } from "../components/ui";
+import { useFarmsList } from "../api/hooks";
 
 type ModuleHubProps = {
   title: string;
@@ -11,11 +10,7 @@ type ModuleHubProps = {
 };
 
 export default function ModuleHub({ title, subtitle, pathSuffix }: ModuleHubProps) {
-  const farms = useQuery(api.farms.list);
-
-  if (!import.meta.env.VITE_CONVEX_URL) {
-    return <EmptyState message="Configure Convex para acceder a este módulo." />;
-  }
+  const farms = useFarmsList();
 
   if (farms === undefined) return <LoadingState />;
 

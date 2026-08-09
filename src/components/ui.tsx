@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 
 export function PageHeader({
   title,
@@ -51,7 +50,7 @@ export function FarmBreadcrumb({
   farmName,
   current,
 }: {
-  farmId: Id<"farms">;
+  farmId: string;
   farmName: string;
   current?: string;
 }) {

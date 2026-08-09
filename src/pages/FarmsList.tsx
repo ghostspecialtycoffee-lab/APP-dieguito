@@ -1,13 +1,13 @@
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Plus, Search, MapPin } from "lucide-react";
 import { useState } from "react";
 import { EmptyState, LoadingState, PageHeader } from "../components/ui";
+import { useCreateFarm, useFarmsList } from "../api/hooks";
 
 export default function FarmsList() {
-  const farms = useQuery(api.farms.list);
-  const createFarm = useMutation(api.farms.create);
+  const farms = useFarmsList();
+  const createFarm = useCreateFarm();
+  const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({
@@ -17,12 +17,6 @@ export default function FarmsList() {
     altitude: "",
     areaHa: "",
   });
-
-  if (!import.meta.env.VITE_CONVEX_URL) {
-    return (
-      <EmptyState message="Configure Convex para gestionar fincas." />
-    );
-  }
 
   if (farms === undefined) return <LoadingState />;
 
@@ -43,7 +37,7 @@ export default function FarmsList() {
     });
     setShowForm(false);
     setForm({ name: "", owner: "", address: "", altitude: "", areaHa: "" });
-    window.location.href = `/fincas/${id}`;
+    navigate(`fincas/${id}`);
   };
 
   return (

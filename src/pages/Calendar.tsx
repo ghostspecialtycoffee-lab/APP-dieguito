@@ -1,12 +1,11 @@
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Link } from "react-router-dom";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { LoadingState, PageHeader } from "../components/ui";
+import { useAlertsList, useFarmsList } from "../api/hooks";
 
 export default function Calendar() {
-  const farms = useQuery(api.farms.list);
-  const alerts = useQuery(api.alerts.list);
+  const farms = useFarmsList();
+  const alerts = useAlertsList();
 
   if (farms === undefined) return <LoadingState />;
 

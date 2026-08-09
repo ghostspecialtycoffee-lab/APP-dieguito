@@ -1,13 +1,12 @@
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Link } from "react-router-dom";
 import { MapPin, Footprints, Bell, ArrowRight } from "lucide-react";
 import { FlowSteps, PageHeader } from "../components/ui";
+import { useAlertsList, useFarmsList } from "../api/hooks";
+import { isCloudMode } from "../lib/appMode";
 
 export default function Dashboard() {
-  const farms = useQuery(api.farms.list);
-  const alerts = useQuery(api.alerts.list);
-  const hasConvex = Boolean(import.meta.env.VITE_CONVEX_URL);
+  const farms = useFarmsList();
+  const alerts = useAlertsList();
 
   const unreadAlerts = alerts?.filter((a) => !a.read).length ?? 0;
 
@@ -43,7 +42,7 @@ export default function Dashboard() {
           <div className="flex-1">
             <p className="font-semibold text-coffee-900">Fincas</p>
             <p className="text-sm text-coffee-600">
-              {hasConvex && farms === undefined
+              {isCloudMode && farms === undefined
                 ? "…"
                 : `${farms?.length ?? 0} registradas`}
             </p>

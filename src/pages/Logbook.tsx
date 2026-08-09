@@ -1,21 +1,13 @@
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Link, useParams } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 import { BookOpen, Search } from "lucide-react";
 import { useState } from "react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
+import { useFarm, useVisitsByFarm } from "../api/hooks";
 
 export default function Logbook() {
   const { farmId } = useParams<{ farmId: string }>();
-  const farm = useQuery(
-    api.farms.get,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const visits = useQuery(
-    api.visits.listByFarm,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
+  const farm = useFarm(farmId);
+  const visits = useVisitsByFarm(farmId);
   const [search, setSearch] = useState("");
 
   if (!farmId || farm === undefined || visits === undefined) {

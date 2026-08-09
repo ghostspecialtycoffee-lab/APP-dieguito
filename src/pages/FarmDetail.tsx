@@ -1,7 +1,4 @@
-import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Link, useParams } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 import {
   ClipboardList,
   ListChecks,
@@ -10,21 +7,12 @@ import {
   FlaskConical,
 } from "lucide-react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
+import { useFarm, useVisitsByFarm } from "../api/hooks";
 
 export default function FarmDetail() {
   const { farmId } = useParams<{ farmId: string }>();
-  const farm = useQuery(
-    api.farms.get,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const visits = useQuery(
-    api.visits.listByFarm,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-
-  if (!import.meta.env.VITE_CONVEX_URL) {
-    return <div className="card">Configure Convex para ver detalles.</div>;
-  }
+  const farm = useFarm(farmId);
+  const visits = useVisitsByFarm(farmId);
 
   if (farm === undefined) return <LoadingState />;
   if (farm === null) return <div className="card">Finca no encontrada.</div>;

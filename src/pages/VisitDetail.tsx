@@ -1,22 +1,18 @@
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { useParams } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useState } from "react";
 import { Camera, Plus, X } from "lucide-react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
+import {
+  useFarm,
+  useUpdateVisit,
+  useVisit,
+} from "../api/hooks";
 
 export default function VisitDetail() {
   const { farmId, visitId } = useParams<{ farmId: string; visitId: string }>();
-  const farm = useQuery(
-    api.farms.get,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const visit = useQuery(
-    api.visits.get,
-    visitId ? { visitId: visitId as Id<"visits"> } : "skip",
-  );
-  const updateVisit = useMutation(api.visits.update);
+  const farm = useFarm(farmId);
+  const visit = useVisit(visitId);
+  const updateVisit = useUpdateVisit();
   const [saved, setSaved] = useState(false);
 
   const [activities, setActivities] = useState<string[]>([]);

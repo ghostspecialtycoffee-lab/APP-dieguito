@@ -1,9 +1,11 @@
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { useParams } from "react-router-dom";
-import type { Id } from "../../convex/_generated/dataModel";
 import { useEffect, useState } from "react";
 import { FarmBreadcrumb, LoadingState, PageHeader } from "../components/ui";
+import {
+  useFarm,
+  useUpsertWorkPlan,
+  useWorkPlanByFarm,
+} from "../api/hooks";
 
 const DEFAULT_ACTIVITIES = [
   "Fertilización edáfica",
@@ -14,15 +16,9 @@ const DEFAULT_ACTIVITIES = [
 
 export default function WorkPlan() {
   const { farmId } = useParams<{ farmId: string }>();
-  const farm = useQuery(
-    api.farms.get,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const plan = useQuery(
-    api.workPlans.getByFarm,
-    farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  const upsert = useMutation(api.workPlans.upsert);
+  const farm = useFarm(farmId);
+  const plan = useWorkPlanByFarm(farmId);
+  const upsert = useUpsertWorkPlan();
   const [saved, setSaved] = useState(false);
 
   const [objective, setObjective] = useState("");
@@ -70,7 +66,7 @@ export default function WorkPlan() {
 
   const handleSave = async () => {
     await upsert({
-      farmId: farmId as Id<"farms">,
+      farmId: farmId!,
       objective,
       responsible: responsible || undefined,
       scheduleStart: scheduleStart || undefined,

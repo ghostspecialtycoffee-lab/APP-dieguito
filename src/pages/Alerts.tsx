@@ -1,12 +1,11 @@
-import { useMutation, useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
 import { Link } from "react-router-dom";
 import { Bell, Check } from "lucide-react";
 import { LoadingState, PageHeader } from "../components/ui";
+import { useAlertsList, useMarkAlertRead } from "../api/hooks";
 
 export default function Alerts() {
-  const alerts = useQuery(api.alerts.list);
-  const markRead = useMutation(api.alerts.markRead);
+  const alerts = useAlertsList();
+  const markRead = useMarkAlertRead();
 
   if (alerts === undefined) return <LoadingState />;
 
@@ -61,7 +60,7 @@ export default function Alerts() {
                 <button
                   type="button"
                   className="btn-secondary flex items-center gap-1 shrink-0"
-                  onClick={() => markRead({ alertId: alert._id })}
+                  onClick={() => markRead(alert._id)}
                 >
                   <Check className="h-4 w-4" />
                   Marcar leída

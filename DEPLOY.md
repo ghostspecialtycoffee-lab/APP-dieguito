@@ -18,18 +18,15 @@ La app se despliega **solo con GitHub Pages** (sin Vercel ni Netlify).
 
 Cada push a `main` ejecuta el workflow **Publish to gh-pages**, que compila y actualiza la rama `gh-pages`.
 
-## Backend Convex (datos en la nube)
+## Backend Convex (automático)
 
-Sin esto la interfaz carga pero no guarda fincas ni visitas.
+Ejecuta **una vez**:
 
 ```bash
-npx convex login
-npx convex deploy --cmd 'npm run build:pages'
+npm run setup:once
 ```
 
-En el repo: **Settings → Secrets and variables → Actions** → secret `VITE_CONVEX_URL` con la URL de Convex (`https://….convex.cloud`).
-
-Vuelve a ejecutar el workflow **Publish to gh-pages** (Actions → Run workflow).
+El workflow usa `CONVEX_DEPLOY_KEY` y despliega Convex + build en un solo paso. Ver [AUTOMATIZACION.md](./AUTOMATIZACION.md).
 
 ## Publicar manualmente desde tu máquina
 

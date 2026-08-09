@@ -7,6 +7,11 @@ on:
 
 permissions:
   contents: write
+  pages: write
+
+concurrency:
+  group: gh-pages-${{ github.repository }}
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -19,12 +24,57 @@ jobs:
           node-version: 22
           cache: npm
 
+      - name: Ensure GitHub Pages source (gh-pages branch)
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          status=$(gh api repos/${{ github.repository }}/pages --jq .status 2>/dev/null || echo "none")
+          if [ "$status" = "none" ]; then
+            echo "Configurando GitHub Pages → rama gh-pages..."
+            gh api -X POST "repos/${{ github.repository }}/pages" \
+              -f build_type=legacy \
+              -f 'source[branch]=gh-pages' \
+              -f 'source[path]=/' || true
+          else
+            echo "GitHub Pages ya configurado (status: $status)"
+            gh api -X PUT "repos/${{ github.repository }}/pages" \
+              -f build_type=legacy \
+              -f 'source[branch]=gh-pages' \
+              -f 'source[path]=/' || true
+          fi
+
       - run: npm ci
 
-      - name: Build for GitHub Pages
-        run: npm run build:pages
+      - name: Deploy Convex + build (automático con CONVEX_DEPLOY_KEY)
+        id: convex_build
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${CONVEX_DEPLOY_KEY:-}" ]; then
+            echo "mode=skip" >> "$GITHUB_OUTPUT"
+            echo "⚠ Sin CONVEX_DEPLOY_KEY — build sin backend en la nube."
+            echo "   Ejecuta: npm run setup:once (una sola vez en tu PC)"
+            exit 0
+          fi
+          echo "mode=convex" >> "$GITHUB_OUTPUT"
+          npx convex deploy \
+            --cmd 'npm run build:pages' \
+            --cmd-url-env-var-name VITE_CONVEX_URL
+
+      - name: Seed datos de demostración
+        if: steps.convex_build.outputs.mode == 'convex'
+        env:
+          CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+        run: npx convex run seed:seed
+
+      - name: Build for GitHub Pages (sin Convex)
+        if: steps.convex_build.outputs.mode != 'convex'
         env:
           VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
+        run: npm run build:pages
 
       - name: SPA fallback
         run: cp dist/index.html dist/404.html
@@ -35,3 +85,15 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           force_orphan: true
+
+      - name: Resumen del despliegue
+        if: always()
+        run: |
+          echo "═══════════════════════════════════════════════════════"
+          echo "  App: https://ghostspecialtycoffee-lab.github.io/APP-dieguito/"
+          if [ "${{ steps.convex_build.outputs.mode }}" = "convex" ]; then
+            echo "  Convex: ✓ desplegado y datos semilla cargados"
+          else
+            echo "  Convex: pendiente — npm run setup:once"
+          fi
+          echo "═══════════════════════════════════════════════════════"

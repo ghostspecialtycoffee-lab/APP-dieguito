@@ -30,25 +30,26 @@ Abra http://localhost:5173
 
 ## App web en GitHub Pages
 
-Despliegue **solo con GitHub Pages** (sin Vercel).
+**Automatización (recomendada):** una sola vez en tu PC:
 
-1. **Settings → Pages** → Source: **Deploy from a branch** → `gh-pages` / `/ (root)`
-2. URL: **https://ghostspecialtycoffee-lab.github.io/APP-dieguito/**
-3. Cada push a `main` actualiza `gh-pages` (workflow **Publish to gh-pages**)
+```bash
+npm run setup:once
+```
 
-Para datos en la nube, configure Convex y el secret `VITE_CONVEX_URL`. Ver [DEPLOY.md](./DEPLOY.md).
+Ver [AUTOMATIZACION.md](./AUTOMATIZACION.md). Después, cada push a `main` despliega Convex + Pages sin más pasos.
+
+URL: **https://ghostspecialtycoffee-lab.github.io/APP-dieguito/**
 
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
+| `npm run setup:once` | Configurar todo (Pages + Convex + secret) — **una vez** |
+| `npm run setup:status` | Ver qué falta configurar |
 | `npm run dev` | Desarrollo con recarga en caliente |
-| `npm run build` | Compilar para producción (ruta `/`) |
 | `npm run build:pages` | Build con ruta `/APP-dieguito/` para GitHub Pages |
-| `npm run preview` | Servir `dist` en http://localhost:5173 |
-| `npm run start:web` | Build + servir producción |
-| `npm run deploy:pages` | Build + push a rama `gh-pages` |
-| `npx convex dev` | Backend Convex (desarrollo) |
+| `npm run deploy:pages` | Build + push manual a `gh-pages` |
+| `npm run check:config` | Verificar entorno local |
 
 ## Licencia
 

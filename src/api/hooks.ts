@@ -1,304 +1,145 @@
-import { useMutation, useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { useLocalDataOptional } from "../context/LocalDataContext";
-import * as store from "../data/localDb";
-import type {
-  Alert,
-  Diagnostic,
-  Farm,
-  Visit,
-  WorkPlan,
-  WorkPlanActivity,
-} from "../data/types";
-import { isCloudMode } from "../lib/appMode";
+import { useLocalData } from "../context/LocalDataContext";
+import { isCloudMode } from "../lib/utils";
+import * as localDb from "../data/localDb";
+import type { PaymentMethod, Product, ProductCategory } from "../data/types";
 
-export function useFarmsList(): Farm[] | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(api.farms.list, isCloudMode ? {} : "skip");
-  if (!isCloudMode && local) {
-    return store.listFarms(local.db);
-  }
-  return convex as Farm[] | undefined;
-}
-
-export function useFarm(farmId: string | undefined): Farm | null | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(
-    api.farms.get,
-    isCloudMode && farmId ? { farmId: farmId as Id<"farms"> } : "skip",
+export function useProducts(activeOnly = false) {
+  const cloud = useQuery(
+    api.products.list,
+    isCloudMode ? { activeOnly } : "skip",
   );
-  if (!isCloudMode && local) {
-    if (!farmId) return undefined;
-    return store.getFarm(local.db, farmId);
+  const { db } = useLocalData();
+
+  if (isCloudMode) {
+    return {
+      products: cloud ?? [],
+      loading: cloud === undefined,
+    };
   }
-  return convex as Farm | null | undefined;
-}
 
-export function useCreateFarm() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.farms.create);
-
-  return async (args: {
-    name: string;
-    owner: string;
-    address: string;
-    altitude: number;
-    areaHa: number;
-    plantCount?: number;
-    variety?: string;
-    sowingDate?: string;
-  }) => {
-    if (!isCloudMode && local) {
-      const id = store.createFarm(local.db, args);
-      local.refresh();
-      return id;
-    }
-    return convexMut(args);
+  return {
+    products: localDb.listProducts(db, activeOnly),
+    loading: false,
   };
 }
 
-export function useUpdateFarm() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.farms.update);
-
-  return async (args: {
-    farmId: string;
-    name?: string;
-    owner?: string;
-    address?: string;
-    altitude?: number;
-    areaHa?: number;
-    plantCount?: number;
-    variety?: string;
-    sowingDate?: string;
-  }) => {
-    if (!isCloudMode && local) {
-      const { farmId, ...patch } = args;
-      store.updateFarm(local.db, farmId, patch);
-      local.refresh();
-      return null;
-    }
-    return convexMut({
-      farmId: args.farmId as Id<"farms">,
-      name: args.name,
-      owner: args.owner,
-      address: args.address,
-      altitude: args.altitude,
-      areaHa: args.areaHa,
-      plantCount: args.plantCount,
-      variety: args.variety,
-      sowingDate: args.sowingDate,
-    });
-  };
-}
-
-export function useVisitsByFarm(
-  farmId: string | undefined,
-): Visit[] | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(
-    api.visits.listByFarm,
-    isCloudMode && farmId ? { farmId: farmId as Id<"farms"> } : "skip",
+export function useSalesByDateRange(startDate: string, endDate: string) {
+  const cloud = useQuery(
+    api.sales.listByDateRange,
+    isCloudMode ? { startDate, endDate } : "skip",
   );
-  if (!isCloudMode && local) {
-    if (!farmId) return undefined;
-    return store.listVisitsByFarm(local.db, farmId);
+  const { db } = useLocalData();
+
+  if (isCloudMode) {
+    return {
+      sales: cloud ?? [],
+      loading: cloud === undefined,
+    };
   }
-  return convex as Visit[] | undefined;
+
+  return {
+    sales: localDb.listSalesByDateRange(db, startDate, endDate),
+    loading: false,
+  };
 }
 
-export function useVisit(visitId: string | undefined): Visit | null | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(
-    api.visits.get,
-    isCloudMode && visitId ? { visitId: visitId as Id<"visits"> } : "skip",
+export function useSalesSummary(startDate: string, endDate: string) {
+  const cloud = useQuery(
+    api.sales.summary,
+    isCloudMode ? { startDate, endDate } : "skip",
   );
-  if (!isCloudMode && local) {
-    if (!visitId) return undefined;
-    return store.getVisit(local.db, visitId);
+  const { db } = useLocalData();
+
+  if (isCloudMode) {
+    return {
+      summary: cloud ?? null,
+      loading: cloud === undefined,
+    };
   }
-  return convex as Visit | null | undefined;
-}
 
-export function useCreateVisit() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.visits.create);
-
-  return async (args: {
-    farmId: string;
-    date: string;
-    visitType: string;
-    technician: string;
-    weather?: string;
-    observations?: string;
-    activities: string[];
-    recommendations: string[];
-    photoUrls: string[];
-    nextVisitDate?: string;
-  }) => {
-    if (!isCloudMode && local) {
-      const id = store.createVisit(local.db, args);
-      local.refresh();
-      return id;
-    }
-    return convexMut({
-      ...args,
-      farmId: args.farmId as Id<"farms">,
-    });
+  return {
+    summary: localDb.computeSummary(db, startDate, endDate),
+    loading: false,
   };
 }
 
-export function useUpdateVisit() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.visits.update);
+export function useProductMutations() {
+  const createCloud = useMutation(api.products.create);
+  const updateCloud = useMutation(api.products.update);
+  const removeCloud = useMutation(api.products.remove);
+  const { db, setDb } = useLocalData();
 
-  return async (args: {
-    visitId: string;
-    date?: string;
-    visitType?: string;
-    technician?: string;
-    weather?: string;
-    observations?: string;
-    activities?: string[];
-    recommendations?: string[];
-    photoUrls?: string[];
-    nextVisitDate?: string;
-  }) => {
-    if (!isCloudMode && local) {
-      const { visitId, ...patch } = args;
-      store.updateVisit(local.db, visitId, patch);
-      local.refresh();
-      return null;
-    }
-    const { visitId, ...rest } = args;
-    return convexMut({
-      visitId: visitId as Id<"visits">,
-      ...rest,
-    });
+  return {
+    create: async (data: {
+      name: string;
+      category: ProductCategory;
+      price: number;
+    }) => {
+      if (isCloudMode) {
+        return await createCloud(data);
+      }
+      setDb(localDb.createProduct(db, data));
+    },
+    update: async (
+      productId: string,
+      updates: Partial<Pick<Product, "name" | "category" | "price" | "active">>,
+    ) => {
+      if (isCloudMode) {
+        await updateCloud({
+          productId: productId as Id<"products">,
+          ...updates,
+        });
+        return;
+      }
+      setDb(localDb.updateProduct(db, productId, updates));
+    },
+    remove: async (productId: string) => {
+      if (isCloudMode) {
+        await removeCloud({ productId: productId as Id<"products"> });
+        return;
+      }
+      setDb(localDb.deactivateProduct(db, productId));
+    },
   };
 }
 
-export function useDiagnosticByFarm(
-  farmId: string | undefined,
-): Diagnostic | null | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(
-    api.diagnostics.getByFarm,
-    isCloudMode && farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  if (!isCloudMode && local) {
-    if (!farmId) return undefined;
-    return store.getDiagnosticByFarm(local.db, farmId);
-  }
-  return convex as Diagnostic | null | undefined;
-}
+export function useSaleMutations() {
+  const createCloud = useMutation(api.sales.create);
+  const removeCloud = useMutation(api.sales.remove);
+  const { db, setDb } = useLocalData();
 
-export function useUpsertDiagnostic() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.diagnostics.upsert);
-
-  return async (args: {
-    farmId: string;
-    cropAge?: number;
-    spacing?: string;
-    shadeType?: string;
-    sowingSystem?: string;
-    fertilizationFreq?: string;
-    lastFertilization?: string;
-    observations?: string;
-    soilPh?: number;
-    organicMatter?: number;
-    phosphorus?: number;
-    potassium?: number;
-    calcium?: number;
-    magnesium?: number;
-    aluminum?: number;
-    soilPdfName?: string;
-  }) => {
-    if (!isCloudMode && local) {
-      const id = store.upsertDiagnostic(local.db, args);
-      local.refresh();
-      return id;
-    }
-    return convexMut({
-      ...args,
-      farmId: args.farmId as Id<"farms">,
-    });
-  };
-}
-
-export function useWorkPlanByFarm(
-  farmId: string | undefined,
-): WorkPlan | null | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(
-    api.workPlans.getByFarm,
-    isCloudMode && farmId ? { farmId: farmId as Id<"farms"> } : "skip",
-  );
-  if (!isCloudMode && local) {
-    if (!farmId) return undefined;
-    return store.getWorkPlanByFarm(local.db, farmId);
-  }
-  return convex as WorkPlan | null | undefined;
-}
-
-export function useUpsertWorkPlan() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.workPlans.upsert);
-
-  return async (args: {
-    farmId: string;
-    objective: string;
-    activities: WorkPlanActivity[];
-    responsible?: string;
-    scheduleStart?: string;
-    scheduleEnd?: string;
-  }) => {
-    if (!isCloudMode && local) {
-      const id = store.upsertWorkPlan(local.db, args);
-      local.refresh();
-      return id;
-    }
-    return convexMut({
-      ...args,
-      farmId: args.farmId as Id<"farms">,
-    });
-  };
-}
-
-export function useAlertsList(): Alert[] | undefined {
-  const local = useLocalDataOptional();
-  const convex = useQuery(api.alerts.list, isCloudMode ? {} : "skip");
-  if (!isCloudMode && local) {
-    return store.listAlerts(local.db);
-  }
-  return convex as Alert[] | undefined;
-}
-
-export function useMarkAlertRead() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.alerts.markRead);
-
-  return async (alertId: string) => {
-    if (!isCloudMode && local) {
-      store.markAlertRead(local.db, alertId);
-      local.refresh();
-      return null;
-    }
-    return convexMut({ alertId: alertId as Id<"alerts"> });
-  };
-}
-
-export function useSeedData() {
-  const local = useLocalDataOptional();
-  const convexMut = useMutation(api.seed.seed);
-
-  return async () => {
-    if (!isCloudMode && local) {
-      local.refresh();
-      return null;
-    }
-    return convexMut({});
+  return {
+    create: async (data: {
+      date: string;
+      items: Array<{
+        productId?: string;
+        productName: string;
+        quantity: number;
+        unitPrice: number;
+      }>;
+      paymentMethod: PaymentMethod;
+      notes?: string;
+    }) => {
+      if (isCloudMode) {
+        return await createCloud({
+          ...data,
+          items: data.items.map((item) => ({
+            ...item,
+            productId: item.productId as Id<"products"> | undefined,
+          })),
+        });
+      }
+      setDb(localDb.createSale(db, data));
+    },
+    remove: async (saleId: string) => {
+      if (isCloudMode) {
+        await removeCloud({ saleId: saleId as Id<"sales"> });
+        return;
+      }
+      setDb(localDb.deleteSale(db, saleId));
+    },
   };
 }

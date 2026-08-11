@@ -1,52 +1,26 @@
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import {
   Home,
-  MapPin,
-  ClipboardList,
-  Footprints,
-  BookOpen,
-  ListChecks,
-  FlaskConical,
+  PlusCircle,
+  History,
+  Package,
   FileText,
-  Calendar,
-  Bell,
-  Settings,
-  LogOut,
   Coffee,
   Menu,
   X,
 } from "lucide-react";
 import { useState } from "react";
+import { isCloudMode } from "../lib/utils";
 
 const navItems = [
   { to: "/", label: "Inicio", icon: Home, end: true },
-  { to: "/fincas", label: "Fincas", icon: MapPin },
-  { to: "/diagnosticos", label: "Diagnósticos", icon: ClipboardList },
-  { to: "/visitas-tecnicas", label: "Visitas Técnicas", icon: Footprints },
-  { to: "/bitacora", label: "Bitácora", icon: BookOpen },
-  { to: "/plan-trabajo", label: "Plan de Trabajo", icon: ListChecks },
-  { to: "/analisis-suelos", label: "Análisis de Suelos", icon: FlaskConical },
+  { to: "/registrar", label: "Registrar venta", icon: PlusCircle },
+  { to: "/historial", label: "Historial", icon: History },
+  { to: "/productos", label: "Productos", icon: Package },
   { to: "/informes", label: "Informes", icon: FileText },
-  { to: "/calendario", label: "Calendario", icon: Calendar },
-  { to: "/alertas", label: "Alertas", icon: Bell },
-  { to: "/configuracion", label: "Configuración", icon: Settings },
 ];
 
-const farmNavItems = [
-  { suffix: "", label: "Resumen", icon: MapPin },
-  { suffix: "/diagnostico", label: "Diagnóstico", icon: ClipboardList },
-  { suffix: "/plan", label: "Plan de Trabajo", icon: ListChecks },
-  { suffix: "/visitas", label: "Visitas Técnicas", icon: Footprints },
-  { suffix: "/bitacora", label: "Bitácora", icon: BookOpen },
-];
-
-export function Sidebar({
-  farmId,
-  onNavigate,
-}: {
-  farmId?: string;
-  onNavigate?: () => void;
-}) {
+function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const linkClass = ({ isActive }: { isActive: boolean }) =>
     `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition ${
       isActive
@@ -59,10 +33,8 @@ export function Sidebar({
       <div className="flex items-center gap-2 border-b border-coffee-700 px-4 py-5">
         <Coffee className="h-8 w-8 text-coffee-300" />
         <div>
-          <p className="text-xs text-coffee-300">Tu Logo</p>
-          <p className="text-sm font-semibold leading-tight">
-            Asistencias Técnicas en Café
-          </p>
+          <p className="text-xs text-coffee-300">Ghost Specialty Coffee</p>
+          <p className="text-sm font-semibold leading-tight">Ventas Diarias</p>
         </div>
       </div>
 
@@ -79,36 +51,10 @@ export function Sidebar({
             {item.label}
           </NavLink>
         ))}
-
-        {farmId && (
-          <div className="mt-4 border-t border-coffee-700 pt-4">
-            <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wide text-coffee-400">
-              Finca actual
-            </p>
-            {farmNavItems.map((item) => (
-              <NavLink
-                key={item.suffix}
-                to={`/fincas/${farmId}${item.suffix}`}
-                end={item.suffix === ""}
-                className={linkClass}
-                onClick={onNavigate}
-              >
-                <item.icon className="h-5 w-5 shrink-0" />
-                {item.label}
-              </NavLink>
-            ))}
-          </div>
-        )}
       </nav>
 
-      <div className="border-t border-coffee-700 p-3">
-        <button
-          type="button"
-          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-coffee-200 hover:bg-coffee-700"
-        >
-          <LogOut className="h-5 w-5" />
-          Cerrar Sesión
-        </button>
+      <div className="border-t border-coffee-700 p-4 text-xs text-coffee-300">
+        {isCloudMode ? "Modo nube (Convex)" : "Modo local (navegador)"}
       </div>
     </aside>
   );
@@ -116,15 +62,11 @@ export function Sidebar({
 
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const location = useLocation();
-  const pathParts = location.pathname.split("/");
-  const farmId =
-    pathParts[1] === "fincas" && pathParts[2] ? pathParts[2] : undefined;
 
   return (
     <div className="flex min-h-screen">
       <div className="hidden lg:block">
-        <Sidebar farmId={farmId} />
+        <Sidebar />
       </div>
 
       {mobileOpen && (
@@ -134,15 +76,12 @@ export default function Layout() {
             onClick={() => setMobileOpen(false)}
           />
           <div className="absolute left-0 top-0 h-full">
-            <Sidebar
-              farmId={farmId}
-              onNavigate={() => setMobileOpen(false)}
-            />
+            <Sidebar onNavigate={() => setMobileOpen(false)} />
           </div>
         </div>
       )}
 
-      <div className="flex flex-1 flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex items-center gap-3 border-b border-coffee-200 bg-white px-4 py-3 lg:px-6">
           <button
             type="button"
@@ -157,10 +96,10 @@ export default function Layout() {
           </button>
           <div className="flex-1">
             <h1 className="text-lg font-semibold text-coffee-900">
-              Programa de Asistencias Técnicas en Café
+              Sistema de Registro de Ventas Diarias
             </h1>
-            <p className="text-xs text-coffee-600 hidden sm:block">
-              Gestión eficiente, información precisa, mejores resultados
+            <p className="hidden text-xs text-coffee-600 sm:block">
+              Registro, seguimiento e informes de ventas
             </p>
           </div>
         </header>
@@ -170,8 +109,7 @@ export default function Layout() {
         </main>
 
         <footer className="border-t border-coffee-200 bg-coffee-800 px-4 py-3 text-center text-xs text-coffee-100">
-          Programa de Asistencias Técnicas en Café | Gestión eficiente,
-          información precisa, mejores resultados.
+          Ghost Specialty Coffee — Ventas diarias e informes
         </footer>
       </div>
     </div>

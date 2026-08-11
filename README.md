@@ -1,56 +1,56 @@
-# Programa de Asistencias Técnicas en Café
+# Sistema de Registro de Ventas Diarias e Informes
 
-Aplicación web para gestionar asistencia técnica en fincas cafeteras: registro de fincas, diagnósticos, planes de trabajo, visitas técnicas, bitácora, informes y alertas.
+Aplicación web para **Ghost Specialty Coffee** que permite registrar ventas diarias, consultar historial y generar informes.
 
 ## Características
 
-- **Fincas**: registro con ubicación, altitud, área y datos del productor
-- **Diagnóstico inicial**: cultivo, fertilización, análisis de suelos (pH, MO, P, K, Ca, Mg, Al)
-- **Plan de trabajo**: objetivos, actividades con insumos y fechas
-- **Visitas técnicas**: registro de campo con actividades, recomendaciones y evidencias
-- **Bitácora**: historial searchable de todas las actividades
-- **Informes**: exportación de datos (JSON; PDF en versión futura)
-- **Calendario y alertas**: visitas programadas y notificaciones
-- **Backend en tiempo real** con [Convex](https://convex.dev)
+- **Panel de ventas**: resumen del día, semana y mes
+- **Registro de ventas**: productos, cantidades y método de pago (efectivo, tarjeta, transferencia)
+- **Catálogo de productos**: bebidas, comida y otros artículos
+- **Historial**: filtro por fechas y detalle de cada transacción
+- **Informes**: totales, top productos, exportación CSV y JSON
+- **Modo local**: funciona en el navegador sin backend (datos en `localStorage`)
+- **Modo nube** (opcional): backend en tiempo real con [Convex](https://convex.dev)
 
 ## Requisitos
 
 - Node.js 18+
-- Cuenta Convex (gratuita) o modo agente anónimo para desarrollo
 
-## Instalación local
+## Instalación
 
 ```bash
 npm install
-npx convex dev
 npm run dev
 ```
 
 Abra http://localhost:5173
 
-## App web en GitHub Pages
+La app incluye datos de ejemplo (productos y ventas) al primer uso en modo local.
 
-**Automatización (recomendada):** una sola vez en tu PC:
+## Backend Convex (opcional)
 
 ```bash
-npm run setup:once
+cp .env.example .env.local
+npx convex dev
 ```
 
-Ver [AUTOMATIZACION.md](./AUTOMATIZACION.md). Después, cada push a `main` despliega Convex + Pages sin más pasos.
-
-URL: **https://ghostspecialtycoffee-lab.github.io/APP-dieguito/**
+Copie la URL de Convex a `VITE_CONVEX_URL` en `.env.local` y reinicie `npm run dev`.
 
 ## Scripts
 
 | Comando | Descripción |
 |---------|-------------|
-| `npm run setup:once` | Configurar todo (Pages + Convex + secret) — **una vez** |
-| `npm run setup:status` | Ver qué falta configurar |
-| `npm run dev` | Desarrollo con recarga en caliente |
-| `npm run build:pages` | Build con ruta `/APP-dieguito/` para GitHub Pages |
-| `npm run deploy:pages` | Build + push manual a `gh-pages` |
-| `npm run check:config` | Verificar entorno local |
+| `npm run dev` | Desarrollo local |
+| `npm run build` | Build de producción |
+| `npm run build:pages` | Build para GitHub Pages |
+| `npm run lint` | ESLint |
+
+## Estructura
+
+- `src/pages/` — Dashboard, registro, historial, productos, informes
+- `src/data/` — persistencia local
+- `convex/` — esquema y funciones (modo nube)
 
 ## Licencia
 
-MIT
+Uso interno — Ghost Specialty Coffee

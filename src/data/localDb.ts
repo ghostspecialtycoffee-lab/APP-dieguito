@@ -1,192 +1,93 @@
-import type {
-  Alert,
-  Diagnostic,
-  Farm,
-  LocalDatabase,
-  Visit,
-  WorkPlan,
-  WorkPlanActivity,
-} from "./types";
+import type { LocalDatabase, PaymentMethod, Product, Sale } from "./types";
 
-const STORAGE_KEY = "cafe-atc-local-v1";
+const STORAGE_KEY = "ghost-sales-db-v1";
 
-const now = Date.now();
+function createId(): string {
+  return `local_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
+}
+
+const defaultProducts: Omit<Product, "id" | "createdAt">[] = [
+  { name: "Espresso", category: "bebida", price: 3500, active: true },
+  { name: "Cappuccino", category: "bebida", price: 5500, active: true },
+  { name: "Latte", category: "bebida", price: 6000, active: true },
+  { name: "Americano", category: "bebida", price: 4500, active: true },
+  { name: "Cold Brew", category: "bebida", price: 6500, active: true },
+  { name: "Croissant", category: "comida", price: 4000, active: true },
+  { name: "Brownie", category: "comida", price: 4500, active: true },
+  { name: "Bolsa 250g", category: "otro", price: 28000, active: true },
+];
 
 function seedDatabase(): LocalDatabase {
-  const farm1: Farm = {
-    _id: "farm_paraiso",
-    _creationTime: now - 100000,
-    name: "Finca El Paraíso",
-    owner: "Juan Pérez",
-    address: "Vereda La Bella, Manizales",
-    altitude: 1650,
-    areaHa: 2.5,
-    plantCount: 5000,
-    variety: "Castillo",
-    sowingDate: "2019-06-15",
-    createdAt: now - 100000,
-  };
-  const farm2: Farm = {
-    _id: "farm_esperanza",
-    _creationTime: now - 90000,
-    name: "Finca La Esperanza",
-    owner: "María Rodríguez",
-    address: "Vereda El Rosario, Garzón, Huila",
-    altitude: 1780,
-    areaHa: 2.8,
-    plantCount: 9500,
-    variety: "Castillo",
-    sowingDate: "2020-06-20",
-    createdAt: now - 90000,
-  };
-  const farm3: Farm = {
-    _id: "farm_sanjose",
-    _creationTime: now - 80000,
-    name: "Finca San José",
-    owner: "José Antonio Vega",
-    address: "Vereda San José, Neiva, Huila",
-    altitude: 1520,
-    areaHa: 4.2,
-    plantCount: 15000,
-    variety: "Colombia",
-    sowingDate: "2018-11-10",
-    createdAt: now - 80000,
-  };
+  const now = Date.now();
+  const products: Product[] = defaultProducts.map((p) => ({
+    ...p,
+    id: createId(),
+    createdAt: now,
+  }));
 
-  const diagnostic: Diagnostic = {
-    _id: "diag_paraiso",
-    _creationTime: now - 50000,
-    farmId: farm1._id,
-    cropAge: 5,
-    spacing: "2.0m x 1.0m",
-    shadeType: "Plátano y Guamo",
-    sowingSystem: "Tradicional",
-    fertilizationFreq: "Cada 3 meses",
-    lastFertilization: "2024-05-01",
-    observations: "Buen desarrollo general",
-    soilPh: 5.6,
-    organicMatter: 3.2,
-    phosphorus: 12,
-    potassium: 0.35,
-    calcium: 5.1,
-    magnesium: 1.2,
-    aluminum: 0.2,
-    soilPdfName: "analisis_suelo_el_pariso.pdf",
-    updatedAt: now - 50000,
-  };
+  const espresso = products.find((p) => p.name === "Espresso");
+  const cappuccino = products.find((p) => p.name === "Cappuccino");
+  const croissant = products.find((p) => p.name === "Croissant");
 
-  const workPlan: WorkPlan = {
-    _id: "plan_paraiso",
-    _creationTime: now - 50000,
-    farmId: farm1._id,
-    objective: "Mejorar nutrición y productividad",
-    activities: [
-      {
-        name: "Fertilización edáfica",
-        completed: true,
-        inputs: "Urea 200g/planta, Fosfato 150g/planta",
-        scheduledDate: "2024-06-01",
-      },
-      {
-        name: "Control de arvenses",
-        completed: false,
-        inputs: "Machete manual",
-        scheduledDate: "2024-07-15",
-      },
-      {
-        name: "Manejo de sombra",
-        completed: false,
-        inputs: "Recorte de plátano",
-        scheduledDate: "2024-08-01",
-      },
-      {
-        name: "Monitoreo de broca",
-        completed: false,
-        inputs: "Trampas de alcohol",
-        scheduledDate: "2024-06-20",
-      },
-    ],
-    responsible: "Ing. Ana Torres",
-    scheduleStart: "2024-06-01",
-    scheduleEnd: "2024-11-30",
-    updatedAt: now - 50000,
-  };
+  const today = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
 
-  const visit1: Visit = {
-    _id: "visit_1",
-    _creationTime: now - 40000,
-    farmId: farm1._id,
-    date: "2024-07-10",
-    visitType: "Seguimiento",
-    technician: "Ing. Ana Torres",
-    weather: "Soleado",
-    observations: "Cultivo en buen estado. Presencia leve de broca.",
-    activities: [
-      "Monitoreo de plagas",
-      "Evaluación de fertilización",
-      "Revisión de sombra",
-    ],
-    recommendations: [
-      "Aplicar fertilización foliar",
-      "Instalar trampas de broca",
-      "Recortar sombra en lote 2",
-    ],
-    photoUrls: [],
-    nextVisitDate: "2024-08-10",
-    createdAt: now - 40000,
-  };
+  const sales: Sale[] = [];
 
-  const visit2: Visit = {
-    _id: "visit_2",
-    _creationTime: now - 5000000,
-    farmId: farm1._id,
-    date: "2024-05-20",
-    visitType: "Diagnóstico",
-    technician: "Ing. Ana Torres",
-    weather: "Parcialmente nublado",
-    observations: "Diagnóstico inicial completo.",
-    activities: [
-      "Evaluación de lote",
-      "Muestreo de suelo",
-      "Registro fotográfico",
-    ],
-    recommendations: ["Aplicar cal dolomítica", "Programar fertilización"],
-    photoUrls: [],
-    nextVisitDate: "2024-07-10",
-    createdAt: now - 5000000,
-  };
+  if (espresso && cappuccino) {
+    sales.push({
+      id: createId(),
+      date: today,
+      items: [
+        {
+          productId: espresso.id,
+          productName: espresso.name,
+          quantity: 2,
+          unitPrice: espresso.price,
+          subtotal: espresso.price * 2,
+        },
+        {
+          productId: cappuccino.id,
+          productName: cappuccino.name,
+          quantity: 1,
+          unitPrice: cappuccino.price,
+          subtotal: cappuccino.price,
+        },
+      ],
+      paymentMethod: "tarjeta",
+      total: espresso.price * 2 + cappuccino.price,
+      notes: "Venta de ejemplo",
+      createdAt: now,
+    });
+  }
 
-  const alert1: Alert = {
-    _id: "alert_1",
-    _creationTime: now - 10000,
-    farmId: farm1._id,
-    title: "Visita programada",
-    message: "Seguimiento en Finca El Paraíso",
-    type: "visit",
-    dueDate: "2024-08-10",
-    read: false,
-    createdAt: now - 10000,
-  };
+  if (croissant && cappuccino) {
+    sales.push({
+      id: createId(),
+      date: yesterday,
+      items: [
+        {
+          productId: croissant.id,
+          productName: croissant.name,
+          quantity: 3,
+          unitPrice: croissant.price,
+          subtotal: croissant.price * 3,
+        },
+        {
+          productId: cappuccino.id,
+          productName: cappuccino.name,
+          quantity: 2,
+          unitPrice: cappuccino.price,
+          subtotal: cappuccino.price * 2,
+        },
+      ],
+      paymentMethod: "efectivo",
+      total: croissant.price * 3 + cappuccino.price * 2,
+      createdAt: now - 86400000,
+    });
+  }
 
-  const alert2: Alert = {
-    _id: "alert_2",
-    _creationTime: now - 20000,
-    farmId: farm2._id,
-    title: "Actividad pendiente",
-    message: "Control de arvenses en Finca La Esperanza",
-    type: "activity",
-    dueDate: "2024-07-20",
-    read: false,
-    createdAt: now - 20000,
-  };
-
-  return {
-    farms: [farm1, farm2, farm3],
-    visits: [visit1, visit2],
-    workPlans: [workPlan],
-    diagnostics: [diagnostic],
-    alerts: [alert1, alert2],
-  };
+  return { products, sales, seeded: true };
 }
 
 export function loadDatabase(): LocalDatabase {
@@ -209,154 +110,141 @@ export function saveDatabase(db: LocalDatabase): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(db));
 }
 
-function newId(prefix: string): string {
-  return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
+export function resetDatabase(): LocalDatabase {
+  const seeded = seedDatabase();
+  saveDatabase(seeded);
+  return seeded;
 }
 
-export function listFarms(db: LocalDatabase): Farm[] {
-  return [...db.farms].sort((a, b) => b.createdAt - a.createdAt);
+export function listProducts(db: LocalDatabase, activeOnly = false): Product[] {
+  const products = [...db.products].sort((a, b) => a.name.localeCompare(b.name));
+  return activeOnly ? products.filter((p) => p.active) : products;
 }
 
-export function getFarm(db: LocalDatabase, farmId: string): Farm | null {
-  return db.farms.find((f) => f._id === farmId) ?? null;
-}
-
-export function createFarm(
+export function createProduct(
   db: LocalDatabase,
-  args: Omit<Farm, "_id" | "_creationTime" | "createdAt">,
-): string {
-  const id = newId("farm");
-  const t = Date.now();
-  db.farms.push({
-    _id: id,
-    _creationTime: t,
-    createdAt: t,
-    ...args,
-  });
-  saveDatabase(db);
-  return id;
+  data: { name: string; category: Product["category"]; price: number },
+): LocalDatabase {
+  const product: Product = {
+    id: createId(),
+    name: data.name.trim(),
+    category: data.category,
+    price: data.price,
+    active: true,
+    createdAt: Date.now(),
+  };
+  const next = { ...db, products: [...db.products, product] };
+  saveDatabase(next);
+  return next;
 }
 
-export function updateFarm(
+export function updateProduct(
   db: LocalDatabase,
-  farmId: string,
-  patch: Partial<Farm>,
-): void {
-  const farm = db.farms.find((f) => f._id === farmId);
-  if (!farm) return;
-  Object.assign(farm, patch);
-  saveDatabase(db);
+  productId: string,
+  updates: Partial<Pick<Product, "name" | "category" | "price" | "active">>,
+): LocalDatabase {
+  const next = {
+    ...db,
+    products: db.products.map((p) =>
+      p.id === productId ? { ...p, ...updates, name: updates.name?.trim() ?? p.name } : p,
+    ),
+  };
+  saveDatabase(next);
+  return next;
 }
 
-export function listVisitsByFarm(db: LocalDatabase, farmId: string): Visit[] {
-  return db.visits
-    .filter((v) => v.farmId === farmId)
-    .sort((a, b) => b.date.localeCompare(a.date));
+export function deactivateProduct(db: LocalDatabase, productId: string): LocalDatabase {
+  return updateProduct(db, productId, { active: false });
 }
 
-export function getVisit(db: LocalDatabase, visitId: string): Visit | null {
-  return db.visits.find((v) => v._id === visitId) ?? null;
-}
-
-export function createVisit(
+export function listSalesByDateRange(
   db: LocalDatabase,
-  args: Omit<Visit, "_id" | "_creationTime" | "createdAt">,
-): string {
-  const id = newId("visit");
-  const t = Date.now();
-  db.visits.push({
-    _id: id,
-    _creationTime: t,
-    createdAt: t,
-    ...args,
-  });
-  saveDatabase(db);
-  return id;
+  startDate: string,
+  endDate: string,
+): Sale[] {
+  return db.sales
+    .filter((s) => s.date >= startDate && s.date <= endDate)
+    .sort((a, b) => b.createdAt - a.createdAt);
 }
 
-export function updateVisit(
+export function createSale(
   db: LocalDatabase,
-  visitId: string,
-  patch: Partial<Visit>,
-): void {
-  const visit = db.visits.find((v) => v._id === visitId);
-  if (!visit) return;
-  Object.assign(visit, patch);
-  saveDatabase(db);
-}
-
-export function getDiagnosticByFarm(
-  db: LocalDatabase,
-  farmId: string,
-): Diagnostic | null {
-  return db.diagnostics.find((d) => d.farmId === farmId) ?? null;
-}
-
-export function upsertDiagnostic(
-  db: LocalDatabase,
-  args: Omit<Diagnostic, "_id" | "_creationTime" | "updatedAt">,
-): string {
-  const existing = db.diagnostics.find((d) => d.farmId === args.farmId);
-  const t = Date.now();
-  if (existing) {
-    Object.assign(existing, { ...args, updatedAt: t });
-    saveDatabase(db);
-    return existing._id;
-  }
-  const id = newId("diag");
-  db.diagnostics.push({
-    _id: id,
-    _creationTime: t,
-    updatedAt: t,
-    ...args,
-  });
-  saveDatabase(db);
-  return id;
-}
-
-export function getWorkPlanByFarm(
-  db: LocalDatabase,
-  farmId: string,
-): WorkPlan | null {
-  return db.workPlans.find((p) => p.farmId === farmId) ?? null;
-}
-
-export function upsertWorkPlan(
-  db: LocalDatabase,
-  args: {
-    farmId: string;
-    objective: string;
-    activities: WorkPlanActivity[];
-    responsible?: string;
-    scheduleStart?: string;
-    scheduleEnd?: string;
+  data: {
+    date: string;
+    items: Array<{
+      productId?: string;
+      productName: string;
+      quantity: number;
+      unitPrice: number;
+    }>;
+    paymentMethod: PaymentMethod;
+    notes?: string;
   },
-): string {
-  const existing = db.workPlans.find((p) => p.farmId === args.farmId);
-  const t = Date.now();
-  if (existing) {
-    Object.assign(existing, { ...args, updatedAt: t });
-    saveDatabase(db);
-    return existing._id;
+): LocalDatabase {
+  const items = data.items.map((item) => ({
+    ...item,
+    productName: item.productName.trim(),
+    subtotal: item.quantity * item.unitPrice,
+  }));
+  const total = items.reduce((sum, item) => sum + item.subtotal, 0);
+  const sale: Sale = {
+    id: createId(),
+    date: data.date,
+    items,
+    paymentMethod: data.paymentMethod,
+    total,
+    notes: data.notes?.trim() || undefined,
+    createdAt: Date.now(),
+  };
+  const next = { ...db, sales: [...db.sales, sale] };
+  saveDatabase(next);
+  return next;
+}
+
+export function deleteSale(db: LocalDatabase, saleId: string): LocalDatabase {
+  const next = { ...db, sales: db.sales.filter((s) => s.id !== saleId) };
+  saveDatabase(next);
+  return next;
+}
+
+export function computeSummary(
+  db: LocalDatabase,
+  startDate: string,
+  endDate: string,
+) {
+  const sales = listSalesByDateRange(db, startDate, endDate);
+  const byPaymentMethod: Record<PaymentMethod, number> = {
+    efectivo: 0,
+    tarjeta: 0,
+    transferencia: 0,
+  };
+  const productMap = new Map<
+    string,
+    { productName: string; quantity: number; revenue: number }
+  >();
+
+  let totalSales = 0;
+  for (const sale of sales) {
+    totalSales += sale.total;
+    byPaymentMethod[sale.paymentMethod] += sale.total;
+    for (const item of sale.items) {
+      const existing = productMap.get(item.productName) ?? {
+        productName: item.productName,
+        quantity: 0,
+        revenue: 0,
+      };
+      existing.quantity += item.quantity;
+      existing.revenue += item.subtotal;
+      productMap.set(item.productName, existing);
+    }
   }
-  const id = newId("plan");
-  db.workPlans.push({
-    _id: id,
-    _creationTime: t,
-    updatedAt: t,
-    ...args,
-  });
-  saveDatabase(db);
-  return id;
-}
 
-export function listAlerts(db: LocalDatabase): Alert[] {
-  return [...db.alerts].sort((a, b) => b.createdAt - a.createdAt);
-}
-
-export function markAlertRead(db: LocalDatabase, alertId: string): void {
-  const alert = db.alerts.find((a) => a._id === alertId);
-  if (!alert) return;
-  alert.read = true;
-  saveDatabase(db);
+  return {
+    totalSales,
+    transactionCount: sales.length,
+    byPaymentMethod,
+    topProducts: [...productMap.values()]
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 10),
+  };
 }

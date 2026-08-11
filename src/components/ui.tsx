@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 export function PageHeader({
   title,
   subtitle,
@@ -45,55 +43,20 @@ export function EmptyState({
   );
 }
 
-export function FarmBreadcrumb({
-  farmId,
-  farmName,
-  current,
+export function StatCard({
+  label,
+  value,
+  hint,
 }: {
-  farmId: string;
-  farmName: string;
-  current?: string;
+  label: string;
+  value: string;
+  hint?: string;
 }) {
   return (
-    <nav className="mb-4 text-sm text-coffee-600">
-      <Link to="/fincas" className="hover:text-coffee-800">Fincas</Link>
-      <span className="mx-2">/</span>
-      <Link to={`/fincas/${farmId}`} className="hover:text-coffee-800">
-        {farmName}
-      </Link>
-      {current && (
-        <>
-          <span className="mx-2">/</span>
-          <span className="text-coffee-900 font-medium">{current}</span>
-        </>
-      )}
-    </nav>
-  );
-}
-
-export function FlowSteps() {
-  const steps = [
-    { title: "Registro de Finca", desc: "Datos generales, ubicación, productor" },
-    { title: "Diagnóstico Inicial", desc: "Cultivo, fertilización, suelos" },
-    { title: "Plan de Trabajo", desc: "Objetivos y actividades" },
-    { title: "Visitas Técnicas", desc: "Seguimiento y evidencias" },
-    { title: "Informes", desc: "Reportes y exportación PDF" },
-  ];
-
-  return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-      {steps.map((step, i) => (
-        <div
-          key={step.title}
-          className="card relative border-coffee-300 bg-coffee-50"
-        >
-          <span className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-coffee-600 text-sm font-bold text-white">
-            {i + 1}
-          </span>
-          <h3 className="font-semibold text-coffee-900">{step.title}</h3>
-          <p className="mt-1 text-xs text-coffee-600">{step.desc}</p>
-        </div>
-      ))}
+    <div className="card">
+      <p className="text-sm font-medium text-coffee-600">{label}</p>
+      <p className="mt-2 text-2xl font-bold text-coffee-900">{value}</p>
+      {hint && <p className="mt-1 text-xs text-coffee-500">{hint}</p>}
     </div>
   );
 }

@@ -12,18 +12,26 @@ import * as localDb from "../data/localDb";
 type LocalDataContextValue = {
   db: LocalDatabase;
   refresh: () => void;
+  setDb: (db: LocalDatabase) => void;
 };
 
 const LocalDataContext = createContext<LocalDataContextValue | null>(null);
 
 export function LocalDataProvider({ children }: { children: ReactNode }) {
-  const [db, setDb] = useState<LocalDatabase>(() => localDb.loadDatabase());
+  const [db, setDbState] = useState<LocalDatabase>(() => localDb.loadDatabase());
 
   const refresh = useCallback(() => {
-    setDb(localDb.loadDatabase());
+    setDbState(localDb.loadDatabase());
   }, []);
 
-  const value = useMemo(() => ({ db, refresh }), [db, refresh]);
+  const setDb = useCallback((next: LocalDatabase) => {
+    setDbState(next);
+  }, []);
+
+  const value = useMemo(
+    () => ({ db, refresh, setDb }),
+    [db, refresh, setDb],
+  );
 
   return (
     <LocalDataContext.Provider value={value}>{children}</LocalDataContext.Provider>
@@ -36,8 +44,4 @@ export function useLocalData(): LocalDataContextValue {
     throw new Error("useLocalData requiere LocalDataProvider");
   }
   return ctx;
-}
-
-export function useLocalDataOptional(): LocalDataContextValue | null {
-  return useContext(LocalDataContext);
 }

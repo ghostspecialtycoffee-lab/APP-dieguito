@@ -1,5 +1,5 @@
 {
-  "name": "app-dieguito",
+  "name": "sistema-de-registro-de-ventas-diarias-e-informes",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -8,15 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port 5173",
-    "start:web": "npm run build && npm run preview",
-    "build:pages": "VITE_BASE_PATH=/APP-dieguito/ npm run build",
-    "deploy:pages": "npm run build:pages && cp dist/index.html dist/404.html && npx --yes gh-pages -d dist -t true",
-    "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev",
-    "check:config": "bash scripts/check-config.sh",
-    "setup:once": "bash scripts/one_click_setup.sh",
-    "setup:finish": "bash scripts/setup_after_login.sh",
-    "setup:status": "python3 scripts/automate_setup.py",
-    "setup:auto": "python3 scripts/automate_setup.py --full"
+    "build:pages": "VITE_BASE_PATH=/sistema-de-registro-de-ventas-diarias-e-informes/ npm run build",
+    "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev"
   },
   "dependencies": {
     "convex": "^1.21.0",

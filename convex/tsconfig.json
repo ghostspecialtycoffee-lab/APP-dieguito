@@ -1,13 +1,5 @@
 {
-  "compilerOptions": {
-    "target": "ES2021",
-    "lib": ["ES2021"],
-    "allowJs": true,
-    "strict": true,
-    "moduleResolution": "Bundler",
-    "jsx": "react-jsx",
-    "skipLibCheck": true,
-    "noEmit": true
-  },
-  "include": ["./**/*"]
+  "node": {
+    "externalPackages": []
+  }
 }

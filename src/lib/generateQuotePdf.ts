@@ -22,30 +22,21 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
   let y = margin;
 
   const logos = await loadQuoteLogos();
-  const primaryW = 52;
-  const secondaryW = 18;
 
   if (logos.secondary) {
-    doc.addImage(logos.secondary, "PNG", margin, y, secondaryW, secondaryW);
+    doc.addImage(logos.secondary, "PNG", margin, y, 22, 28);
   }
   if (logos.primary) {
-    doc.addImage(
-      logos.primary,
-      "PNG",
-      margin + secondaryW + 4,
-      y + 2,
-      primaryW,
-      primaryW * 0.25,
-    );
+    doc.addImage(logos.primary, "PNG", margin + 26, y + 4, 52, 18);
   }
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(18);
-  doc.setTextColor(26, 61, 47);
+  doc.setFontSize(14);
+  doc.setTextColor(20, 20, 20);
   doc.text("COTIZACIÓN / PRESUPUESTO", pageWidth - margin, y + 8, {
     align: "right",
   });
-  doc.setFontSize(10);
+  doc.setFontSize(9);
   doc.setFont("helvetica", "normal");
   doc.setTextColor(80, 80, 80);
   doc.text(`No. ${quote.quoteNumber}`, pageWidth - margin, y + 14, {
@@ -61,16 +52,16 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
     { align: "right" },
   );
 
-  y += 32;
+  y += 34;
 
-  doc.setDrawColor(45, 111, 81);
-  doc.setLineWidth(0.4);
+  doc.setDrawColor(30, 30, 30);
+  doc.setLineWidth(0.3);
   doc.line(margin, y, pageWidth - margin, y);
   y += 6;
 
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(9);
-  doc.setTextColor(45, 111, 81);
+  doc.setFontSize(8);
+  doc.setTextColor(30, 30, 30);
   doc.text("DATOS DEL CLIENTE", margin, y);
   y += 5;
 
@@ -99,7 +90,7 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
   y += 4;
 
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(45, 111, 81);
+  doc.setTextColor(30, 30, 30);
   doc.text("DETALLE DE PRODUCTOS Y PRECIOS", margin, y);
   y += 2;
 
@@ -116,13 +107,13 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
     body: tableBody.length > 0 ? tableBody : [["—", "—", "—", "—"]],
     margin: { left: margin, right: margin },
     headStyles: {
-      fillColor: [45, 111, 81],
+      fillColor: [20, 20, 20],
       textColor: 255,
       fontStyle: "bold",
       fontSize: 9,
     },
     bodyStyles: { fontSize: 9, textColor: [40, 40, 40] },
-    alternateRowStyles: { fillColor: [240, 247, 244] },
+    alternateRowStyles: { fillColor: [245, 245, 245] },
     theme: "grid",
   });
 
@@ -133,14 +124,14 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
   const subtotal = quoteSubtotal(quote.items);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(11);
-  doc.setTextColor(26, 61, 47);
+  doc.setTextColor(20, 20, 20);
   doc.text(`TOTAL PRESUPUESTO: ${formatCurrency(subtotal)}`, margin, y);
   y += 8;
 
   if (quote.notes.trim()) {
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.setTextColor(45, 111, 81);
+    doc.setTextColor(30, 30, 30);
     doc.text("NOTAS", margin, y);
     y += 4;
     doc.setFont("helvetica", "normal");
@@ -152,7 +143,7 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
 
   if (quote.timeline.some((t) => t.activity.trim() || t.duration.trim())) {
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(45, 111, 81);
+    doc.setTextColor(30, 30, 30);
     doc.text("TIEMPOS Y CRONOGRAMA", margin, y);
     y += 2;
 
@@ -164,7 +155,7 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
         .map((t) => [t.activity || "—", t.duration || "—"]),
       margin: { left: margin, right: margin },
       headStyles: {
-        fillColor: [37, 90, 67],
+        fillColor: [40, 40, 40],
         textColor: 255,
         fontSize: 9,
       },
@@ -189,7 +180,7 @@ export async function generateQuotePdf(quote: QuoteData): Promise<void> {
 
   doc.setFont("helvetica", "bold");
   doc.setFontSize(9);
-  doc.setTextColor(45, 111, 81);
+  doc.setTextColor(30, 30, 30);
   doc.text("TÉRMINOS Y CONDICIONES", margin, y);
   y += 5;
 

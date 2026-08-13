@@ -117,12 +117,10 @@ export default function Quotations() {
         </p>
       )}
 
-      <div className="mb-4 rounded-lg border border-coffee-200 bg-coffee-50 px-4 py-3 text-sm text-coffee-700">
+      <div className="mb-4 rounded-lg border border-coffee-200 bg-white px-4 py-3 text-sm text-coffee-700">
         <FileText className="mr-2 inline h-4 w-4" />
-        Los logos en <code className="text-xs">public/ghost-logo-primary.svg</code> y{" "}
-        <code className="text-xs">public/ghost-logo-secondary.svg</code> son
-        placeholders. Reemplace esos archivos con los logos oficiales de Ghost y
-        la vista previa y el PDF se actualizarán automáticamente.
+        Logos oficiales de Ghost Specialty Coffee integrados. La vista previa y el
+        PDF se actualizan automáticamente al editar los datos del formulario.
       </div>
 
       <div className="grid gap-6 xl:grid-cols-2">

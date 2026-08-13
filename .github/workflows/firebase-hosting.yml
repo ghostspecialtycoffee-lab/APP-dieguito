@@ -1,0 +1,29 @@
+name: Deploy Firebase Hosting
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build for Firebase
+        env:
+          VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
+        run: npm run build:firebase
+
+      - name: Deploy to ghost-contable
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: npx firebase deploy --only hosting --non-interactive

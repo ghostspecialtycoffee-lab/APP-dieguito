@@ -11,13 +11,14 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route index element={<Dashboard />} />
+        <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="registrar" element={<RegisterSale />} />
         <Route path="historial" element={<History />} />
         <Route path="productos" element={<Products />} />
         <Route path="informes" element={<Reports />} />
         <Route path="cotizaciones" element={<Quotations />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Route>
     </Routes>
   );

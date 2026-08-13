@@ -9,6 +9,8 @@
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port 5173",
     "build:pages": "VITE_BASE_PATH=/sistema-de-registro-de-ventas-diarias-e-informes/ npm run build",
+    "build:firebase": "vite build",
+    "deploy:firebase": "npm run build:firebase && firebase deploy --only hosting",
     "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev"
   },
   "dependencies": {
@@ -30,6 +32,7 @@
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
+    "firebase-tools": "^14.0.0",
     "globals": "^15.14.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",

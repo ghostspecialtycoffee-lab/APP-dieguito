@@ -15,7 +15,7 @@ import { isCloudMode } from "../lib/utils";
 import { BackendStatusBanner } from "./BackendStatusBanner";
 
 const navItems = [
-  { to: "/", label: "Inicio", icon: Home, end: true },
+  { to: "/dashboard", label: "Inicio", icon: Home, end: true },
   { to: "/registrar", label: "Registrar venta", icon: PlusCircle },
   { to: "/historial", label: "Historial", icon: History },
   { to: "/productos", label: "Productos", icon: Package },

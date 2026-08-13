@@ -27,6 +27,17 @@ Abra http://localhost:5173
 
 La app incluye datos de ejemplo (productos y ventas) al primer uso en modo local.
 
+## Firebase Hosting (ghost-contable.web.app)
+
+El error **"Site Not Found"** en Firebase significa que **aún no se ha desplegado** la app. Ver [FIREBASE.md](./FIREBASE.md).
+
+```bash
+npx firebase login
+npm run deploy:firebase
+```
+
+Luego abra: **https://ghost-contable.web.app/dashboard**
+
 ## Backend (Convex — no Firebase)
 
 Esta app **no usa Firebase**. El backend en la nube es [Convex](https://convex.dev).

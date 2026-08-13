@@ -5,6 +5,7 @@ import {
   History,
   Package,
   FileText,
+  FileSpreadsheet,
   Coffee,
   Menu,
   X,
@@ -18,6 +19,7 @@ const navItems = [
   { to: "/historial", label: "Historial", icon: History },
   { to: "/productos", label: "Productos", icon: Package },
   { to: "/informes", label: "Informes", icon: FileText },
+  { to: "/cotizaciones", label: "Cotizaciones", icon: FileSpreadsheet },
 ];
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

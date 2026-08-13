@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <rect width="120" height="120" rx="16" fill="#2d6f51"/>
+  <circle cx="60" cy="52" r="28" fill="#1a3d2f"/>
+  <path d="M42 62c0-10 8-18 18-18s18 8 18 18" stroke="#f0f7f4" stroke-width="4" stroke-linecap="round"/>
+  <path d="M50 38c2-7 7-12 14-12" stroke="#8cc5a8" stroke-width="4" stroke-linecap="round"/>
+  <text x="60" y="98" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#f0f7f4" letter-spacing="1.5">GHOST</text>
+</svg>

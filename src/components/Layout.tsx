@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { isCloudMode } from "../lib/utils";
+import { BackendStatusBanner } from "./BackendStatusBanner";
 
 const navItems = [
   { to: "/", label: "Inicio", icon: Home, end: true },
@@ -107,6 +108,7 @@ export default function Layout() {
         </header>
 
         <main className="flex-1 overflow-auto p-4 lg:p-6">
+          <BackendStatusBanner />
           <Outlet />
         </main>
 

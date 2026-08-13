@@ -27,6 +27,23 @@ Abra http://localhost:5173
 
 La app incluye datos de ejemplo (productos y ventas) al primer uso en modo local.
 
+## Backend (Convex — no Firebase)
+
+Esta app **no usa Firebase**. El backend en la nube es [Convex](https://convex.dev).
+
+| Modo | Cuándo | Datos |
+|------|--------|-------|
+| **Local** | Sin `VITE_CONVEX_URL` | `localStorage` en el navegador |
+| **Nube** | Con `VITE_CONVEX_URL` configurada | Convex (sincronización en tiempo real) |
+
+Si ve errores de conexión en producción (GitHub Pages), ejecute una vez en su PC:
+
+```bash
+npm run setup:once
+```
+
+Eso configura `CONVEX_DEPLOY_KEY` en GitHub Actions para desplegar el backend automáticamente.
+
 ## Backend Convex (opcional)
 
 ```bash

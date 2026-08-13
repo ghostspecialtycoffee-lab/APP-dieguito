@@ -15,6 +15,16 @@ npx firebase use ghost-contable
 
 Si el proyecto no aparece, créalo en [Firebase Console](https://console.firebase.google.com/) con el ID `ghost-contable` y habilita **Hosting**.
 
+## Despliegue automático (GitHub Actions)
+
+El repo incluye `.github/workflows/firebase-hosting.yml`. Requiere el secreto **`FIREBASE_TOKEN`**:
+
+```bash
+npx firebase login:ci
+```
+
+Guarde el token en GitHub → Settings → Secrets → Actions → `FIREBASE_TOKEN`. Detalle en [scripts/firebase-ci-token.md](./scripts/firebase-ci-token.md).
+
 ## Desplegar la app
 
 ```bash

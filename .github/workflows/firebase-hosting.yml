@@ -23,7 +23,18 @@ jobs:
           VITE_CONVEX_URL: ${{ secrets.VITE_CONVEX_URL }}
         run: npm run build:firebase
 
+      - name: Verify Firebase credentials
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          if [ -z "${FIREBASE_TOKEN:-}" ]; then
+            echo "::error::FIREBASE_TOKEN no está configurado en GitHub Secrets."
+            echo "En tu PC: npx firebase login:ci"
+            echo "Luego en GitHub → Settings → Secrets → Actions → FIREBASE_TOKEN"
+            exit 1
+          fi
+
       - name: Deploy to ghost-contable
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: npx firebase deploy --only hosting --non-interactive
+        run: npx firebase deploy --only hosting --non-interactive --project ghost-contable

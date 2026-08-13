@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview --host 0.0.0.0 --port 5173",
-    "build:pages": "VITE_BASE_PATH=/sistema-de-registro-de-ventas-diarias-e-informes/ npm run build",
+    "build:pages": "VITE_BASE_PATH=/APP-dieguito/ npm run build",
     "build:firebase": "vite build",
     "deploy:firebase": "npm run build:firebase && firebase deploy --only hosting",
     "convex:dev": "CONVEX_AGENT_MODE=anonymous npx convex dev"
